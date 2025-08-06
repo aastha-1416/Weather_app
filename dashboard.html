@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Australia Weather Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right top, #6dd5fa, #2980b9);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .weather-container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    #weather-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    #weather-info h2 {
+      font-size: 40px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    #weather-info p {
+      font-size: 18px;
+      text-transform: capitalize;
+    }
+
+    #weather-icon {
+      width: 70px;
+      height: 70px;
+    }
+
+    /* Spinner for loading state */
+    .spinner {
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-top: 5px solid #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="weather-container">
+    <h1>🇦🇺 Weather in Australia</h1>
+    <div id="weather-info">
+      <div class="spinner"></div>
+      <p>Fetching weather data...</p>
+    </div>
+  </div>
+
+  <script>
+    const iconMap = {
+      'clear sky': '☀️',
+      'few clouds': '🌤️',
+      'scattered clouds': '⛅',
+      'broken clouds': '🌥️',
+      'shower rain': '🌧️',
+      'rain': '🌦️',
+      'thunderstorm': '⛈️',
+      'snow': '❄️',
+      'mist': '🌫️'
+    };
+
+    fetch('/weather')
+      .then(res => res.json())
+      .then(data => {
+        const icon = iconMap[data.description.toLowerCase()] || '🌡️';
+        document.getElementById("weather-info").innerHTML = `
+          <div id="weather-icon">${icon}</div>
+          <h2>${data.temp} °C</h2>
+          <p>${data.description}</p>
+        `;
+      })
+      .catch(() => {
+        document.getElementById("weather-info").innerHTML = `
+          <p>❌ Failed to load weather data.</p>
+        `;
+      });
+  </script>
+</body>
+</html>
